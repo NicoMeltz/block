@@ -1,0 +1,73 @@
+html{
+  height: 100%;
+  background-color: black; 
+}
+
+*{
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+.item {
+  margin-top: 40px; 
+  
+}
+
+#root {
+  color: rgb(236, 71, 71);  
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+canvas {
+  cursor: pointer;
+  border: rgb(32, 29, 29) solid 2px;
+  border-radius: 10px;
+  /*
+  //max-width: 500px;
+  //width: calc(100% - 40px);
+  //height: 400px;
+  */
+}
+
+
+.add-button {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+}
+.noselect {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+-webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+#gameOver {
+  position: absolute;
+  top: 33%;
+  left: 33%;
+  width: 33%;
+  border-color: white;
+  border-style: solid;
+  height: 100px;
+  background-color: rgba(0,0,0,0.6);
+  padding: 17px;
+  text-align: center;
+}
+#gameOver span {
+  display: inline-block;
+  margin-bottom: 25px;
+}
+
+.hide {
+  display: none;
+}

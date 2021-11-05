@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Block</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <script src="main.js"></script>
+    <script src="App.js"></script>
+    <script src="Block.js"></script>
+    <script src="Animation.js"></script>
+    <script src="AnimationMerge.js"></script>
+    <script src="AnimationSchift.js"></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="manifest.webmanifest">
+  </head>
+  <body>
+    <div class="noselect" id="root">
+      <div class="item noselect">Level: <span id="level">0</span></div>
+      <canvas class="noselect" width="350" height="500" class="item" id="cv" />
+    </div>
+    <div id="gameOver" class="hide">
+      <span>Game Over!</span>
+      <button id="newGame">New Game</button>
+    </div>
+    <button class="add-button">Add to home screen</button>
+
+    <button id="pause">pause</button>
+  </body>
+</html>

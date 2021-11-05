@@ -1,0 +1,15 @@
+{
+  "background_color": "black",
+  "description": "Blocks",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "icon/block.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "name": "Awesome fox pictures",
+  "short_name": "Blocks",
+  "start_url": "/index.html"
+}
