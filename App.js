@@ -2,6 +2,36 @@
 
 
 class App {
+
+  constructor(){
+    const saveGame = JSON.parse( localStorage.getItem('data'));
+    
+    if(false && saveGame){ 
+        Object.assign(this, saveGame);
+
+        for(var r = 0 ; this.columns.length> r ;r++){
+            for(var key in this.columns[r].blocks){
+              //console.log('draw', key);
+              if(this.columns[r].blocks[key]){
+                const newB = new Block()
+                newB.setData(this.columns[r].blocks[key]);
+                this.columns[r].blocks[key] = newB;
+              }
+            }
+          }
+        this.newBlock();
+        /*if(!this.runningBlock){
+          this.newBlock();
+        } else {
+          const newB = new Block()
+          newB.setData(this.runningBlock);
+          this.runningBlock = newB;
+          this.saveGameloaded = true;
+          this.runningBlock.y= 0;
+        }*/
+    }
+  }
+  saveGameloaded  = false;
   ctx= null;
   h = 0;
   w = 0;
@@ -24,55 +54,59 @@ class App {
   animations=[];
   elapsed = 0;
   now = 0;
-
+  mergeCount = 0; 
+  maxMergeCount = 0;
+  score = 0;
+  bestScore = 0;
   onGameOver = ()=> {};
   onLevelUp = ()=> {};
+  onMergeCount = () => {};
   tapedTwice(){
     this.speed=0.5;
   }
  
   exportToLocalStore(){
-   var data = {
-     columns: []
-   }
-   for(var r = 0 ; this.columns.length> r ;r++){
-      if(!data.columns[r]){
-        data.columns[r]={blocks:[]};
-      }
-      for(var key in this.columns[r].blocks){
-        //console.log('draw', key);
-        if(this.columns[r].blocks[key]){
-          
-          if(!data.columns[r].blocks[key] ){
-              data.columns[r].blocks = []
-          }
-          data.columns[r].blocks[key] = this.columns[r].blocks[key];
-        }
-      }
-    }
+
     localStorage.setItem('data', JSON.stringify(this));
   }
  
   gameOver(){
-    localStorage.setItem('score', '1000');
+  
+    if( this.score > parseInt(localStorage.getItem('bestScore') )) {
+     
+      this.bestScore = this.score;
+      localStorage.setItem('bestScore', this.score);
+    }
+    // localStorage.setItem('score', this.score);
     localStorage.setItem('data', JSON.stringify({gameOver:1}));
-    console.log('localStorage.setItem')
+    //console.log('localStorage.setItem')
     this.toggelRunning();
     this.onGameOver();
     console.log('gameOver')
   }
 
-  levelUp(){
-    this.level = this.level+1;
-    this.onLevelUp();
+  levelUp(value) {
+      this.maxMergeCount ++;
+ 
+      console.log('cal',this.maxMergeCount, this.level*5);
+      if(this.maxMergeCount  > this.level*5 ) {
+        this.level = this.level + 1;
+        //console.log(this.level);
+        this.lastLevelBlock = value;
+        if(this.lastLevelBlock <= 1024){
+          this.makeLevelBlocks();
+        }
+        this.onLevelUp();
+      }
   }
 
   toggelRunning(){
     this.running = !this.running;
-    console.log('this.running', this.running);
+    //console.log('this.running', this.running);
     if(this.running){
-       console.log('requestAnimationFrame')
-      window.requestAnimationFrame((t)=>{this.gameLoop(t)});
+      // console.log('requestAnimationFrame')
+     
+      window.requestAnimationFrame((t) =>{   this.then = t; this.gameLoop(t)});
     } else {
       this.exportToLocalStore()
     }
@@ -103,19 +137,25 @@ class App {
     this.grdBg2 = ctx.createLinearGradient(0, 0, 0, this.h);
     this.grdBg2.addColorStop(0, "#f0f0f0");
     this.grdBg2.addColorStop(1, '#000');
-    
-    this.makeLevelBlocks()
     //console.log(this.randomBlocks);
-
+  
     this.startNewGame()
+      if(!localStorage.hasOwnProperty('bestScore')){
+      localStorage.setItem('bestScore', 0);
+    }else{
+      this.bestScore = parseInt(localStorage.getItem('bestScore'));
+    }
   }
   
   makeLevelBlocks(){
     var value = 2;
-    //this.mapBlock = [];
+    this.mapBlock = [];
+    
     for(var i=1; i <= this.level ; i++){
-      this.mapBlock[i-1] = { value: Math.pow(value, i), ch: this.level-i+1 };
+      this.mapBlock[i-1] = 
+      { value: Math.pow(value, i), ch: this.level-i+1 };
     }
+    console.log(this.mapBlock);
     this.randomBlocks=[];
     for(var i=0; i < this.level ; i++){
       for(var k=0; k < this.mapBlock[i].ch ; k++){
@@ -125,10 +165,17 @@ class App {
   }
   
   startNewGame(){
-    this.level=1;
-    this.makeLevelBlocks();
-    this.firstTime = true
-    this.newBlock();
+    if(!this.saveGameloaded ){
+      this.saveGameloaded = false;
+      this.level=1;
+      this.lastLevelBlock = 2;
+      this.score= 0;
+      this.maxMergeCount = 0
+      this.mergeCount = 0
+      this.makeLevelBlocks();
+      this.firstTime = true
+      this.newBlock();
+    }
     this.toggelRunning();
   }
   
@@ -240,7 +287,7 @@ class App {
         if(this.columns[r].blocks[key]){
           this.foundMerge = false;
           if(this.mergeBlock(this.columns[r].blocks[key])){
-            console.log('mergeBlock found')
+            //console.log('mergeBlock found')
             return true;
           }
         }
@@ -251,14 +298,14 @@ class App {
 
   shiftBlocks(callback){
     // 0 ist unten
-    console.log('shiftBlocks');
+    //console.log('shiftBlocks');
     for(var c = 0 ; this.columns.length> c;c++){
       for(var key of [0,1,2,3,4,5,6,7,8,9]){
         //console.log('draw', key);
         if(!this.columns[c].blocks[key]){
           if(this.columns[c].blocks[key+1]){
             this.animations.push(new AnimationSchift(c+1, 10-key,  this.columns[c].blocks[key+1], ()=> {
-              console.log('shiftBlocks AnimationSchift');
+              //console.log('shiftBlocks AnimationSchift');
               this.columns[c].blocks[key] = this.columns[c].blocks[key+1];
               this.columns[c].blocks[key+1] = null;
               this.columns[c].blocks[key].setPosi(c+1, 10-key)
@@ -270,22 +317,25 @@ class App {
         }
       }
     }
-    console.log('shift done');
+    //console.log('shift done');
     callback();
   }
 
   mergeBlock(lastBlock) {
-    console.log('find merge Block');
+    //console.log('find merge Block');
     this.runningBlock = null;
   
     var delfunction = (delBlock) => {
-        console.log('done');
+        //console.log('done');
         lastBlock.value = lastBlock.value * 2;
+        this.mergeCount++;
+        this.onMergeCount(this.mergeCount);
         if(lastBlock.value > this.lastLevelBlock){
-          this.lastLevelBlock = lastBlock.value;
-          this.levelUp();
-          this.makeLevelBlocks();
+          
+          this.levelUp(lastBlock.value);
+
         }
+        this.score = this.level * this.mergeCount;
         //console.log('removeBlock');
         this.columns[delBlock.selCol-1].blocks[delBlock.row] = null;
         //console.log('shiftBlocks');
@@ -302,7 +352,7 @@ class App {
     if(!this.foundMerge && blockB && lastBlock.value == blockB.value) {
       this.animations.push(new AnimationMerge('bottom', lastBlock, blockB  , delfunction ));
       this.foundMerge = true;
-      console.log('find bottom');
+      //console.log('find bottom');
     }
 
     //check left
@@ -310,7 +360,7 @@ class App {
     if(!this.foundMerge && blockL && lastBlock.value == blockL.value) {
       this.animations.push(new AnimationMerge('left', lastBlock, blockL, delfunction));
       this.foundMerge = true;
-      console.log('find left');
+      //console.log('find left');
     }
 
     //check top
@@ -318,7 +368,7 @@ class App {
     if(!this.foundMerge && blockT && lastBlock.value == blockT.value) {
       this.animations.push(new AnimationMerge('top',lastBlock, blockT, delfunction ));
       this.foundMerge = true;
-       console.log('find top');
+       //console.log('find top');
     }
 
     //check right
@@ -326,7 +376,7 @@ class App {
     if(!this.foundMerge && blockr && lastBlock.value == blockr.value) {
       this.animations.push(new AnimationMerge('right',lastBlock, blockr,delfunction ));
       this.foundMerge = true;
-      console.log('find right');
+      //console.log('find right');
     }
     //schift all ohers blocks
     if(!this.foundMerge){   
@@ -349,7 +399,9 @@ class App {
     this.drwcols(ctx);
      if(this.runningBlock){
        // check if hit
-      
+      if(this.runningBlock.y < 0){
+        this.runningBlock.y= 0;
+      }
       if(!this.checkIfHit()){
           var s = this.runningBlock.y + ( this.elapsed * this.speed);
           //console.log(s);

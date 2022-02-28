@@ -2,8 +2,11 @@
 class AnimationMerge extends Animation {
 
   block = null;
+  
   toMerge = null;
-  callback = () =>{};
+  
+  callback = () => {};
+
   constructor(type, block, toMerge, callback){
     super();
     this.type = type;
@@ -37,7 +40,7 @@ class AnimationMerge extends Animation {
       
     }
     if( diffY == 0 && diffX == 0){
-      console.log('merge done')
+      //console.log('merge done')
       this.callback(this.toMerge);
       this.isDone = true;
     }

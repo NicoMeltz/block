@@ -56,13 +56,20 @@ canvas {
   top: 33%;
   left: 33%;
   width: 33%;
+  min-width: 200px;
   border-color: white;
   border-style: solid;
   height: 100px;
   background-color: rgba(0,0,0,0.6);
   padding: 17px;
   text-align: center;
+  
 }
+
+#gameOver div {
+  color: azure;
+}
+
 #gameOver span {
   display: inline-block;
   margin-bottom: 25px;
@@ -70,4 +77,8 @@ canvas {
 
 .hide {
   display: none;
+}
+#pause {
+ height: 50px;
+ width: 100%;
 }

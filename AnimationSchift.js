@@ -7,7 +7,7 @@ class AnimationSchift extends Animation {
     super();
     this.toCol = toCol;
     this.toRow = toRow;
-    console.log('asda',block);
+    //console.log('asda',block);
     this.toMerge = { 
       y: Block.calcY(block.gep, toCol, toRow , block.blockHeight, 10) , 
       x: Block.calcX(block.gep, toCol, block.blockWidth)
@@ -36,7 +36,7 @@ class AnimationSchift extends Animation {
       
     }
     if( diffY == 0 && diffX == 0){
-      console.log('shift done')
+      //console.log('shift done')
       this.callback(this.toMerge);
       this.isDone = true;
     }

@@ -27,6 +27,9 @@ class Block {
     this.blockHeight = blockHeight
     this.gep = gep;
   }
+  setData(data){
+    Object.assign(this, data);
+  }
   toJson(){
     return JSON.stringify({
       value: this.value,
@@ -66,7 +69,7 @@ class Block {
   }
   
   static calcX (gep, col, blockWidth){
-    console.log(gep, col, blockWidth);
+    //console.log(gep, col, blockWidth);
     return (gep * (col)) +  (blockWidth * (col-1)) + 1;
   }
   draw(ctx){

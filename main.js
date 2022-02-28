@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }, false);
   
   app.init(ctx);
-  
+  var div = document.getElementById('bestScore');
+  div.innerText = app.bestScore;
   window.addEventListener('resize',() => {
       app.resize();
      // console.log('resize1');
@@ -25,18 +26,34 @@ document.addEventListener('DOMContentLoaded', function () {
     var div = document.getElementById('gameOver');
     div.classList.remove('hide');
     console.log('remove hide');
+    var div = document.getElementById('bestScore');
+    div.innerText = app.bestScore;
+    var div = document.getElementById('level');
+    div.innerText = app.level;
   }
 
   app.onLevelUp= () =>{
     var div = document.getElementById('level');
     div.innerText = app.level;
   }
+  app.onMergeCount = (a) =>{
+    var div = document.getElementById('mergeCount');
+    div.innerText = a;
+    var div = document.getElementById('score');
+    div.innerText = app.score;
+   
+
+  }
+
+
   var newGAmeDiv = document.getElementById('newGame');
   newGAmeDiv.addEventListener("click", function (e) {
     var div = document.getElementById('gameOver');
     div.classList.add('hide');
     app.startNewGame();
     console.log('add hide');
+    var div = document.getElementById('bestScore');
+    div.innerText = app.bestScore;
   });
 
 
